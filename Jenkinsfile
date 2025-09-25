@@ -10,7 +10,7 @@ pipeline {
         APP_NAME        = 'task-app' 
         
         // Correctly define image name using the APP_NAME variable
-        DOCKER_IMAGE    = "naveenrroy/${APP_NAME}" 
+        DOCKER_IMAGE    = "nagaraju/${APP_NAME}" 
         
         // Use the built-in BUILD_NUMBER for a unique tag
         DOCKER_TAG      = "build-${BUILD_NUMBER}" 
@@ -24,7 +24,7 @@ pipeline {
     stages {
         stage("Checkout from SCM") {
             steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/naveenroy65/task'
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/nagarajucsd/elevatelabs-task-2'
             }
         }
 
