@@ -31,21 +31,21 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the project...'
-                sh 'mvn clean compile'
+                bat 'mvn clean compile'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
 
         stage('Package') {
             steps {
                 echo 'Packaging application...'
-                sh 'mvn package'
+                bat 'mvn package'
             }
         }
 
@@ -53,21 +53,21 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker image: ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
-                    sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
+                    bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                    bat "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
 
                     echo 'Logging in and pushing Docker image to DockerHub...'
                     // Use the securely loaded credentials from the environment block
-                    sh "echo '${DOCKER_CREDS_PSW}' | docker login -u '${DOCKER_CREDS_USR}' --password-stdin"
-                    sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                    sh "docker push ${DOCKER_IMAGE}:latest"
+                    bat "echo '${DOCKER_CREDS_PSW}' | docker login -u '${DOCKER_CREDS_USR}' --password-stdin"
+                    bat "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    bat "docker push ${DOCKER_IMAGE}:latest"
                 }
             }
             post {
                 always {
                     // This block ensures you always log out
                     echo 'Logging out of Docker Hub...'
-                    sh 'docker logout'
+                    bat 'docker logout'
                 }
             }
         }
@@ -76,7 +76,7 @@ pipeline {
             steps {
                 echo 'Deploying application as a Docker container...'
                 // Use the correct DOCKER_IMAGE and DOCKER_TAG variables
-                sh """
+                bat """
                     docker stop ${APP_NAME} || true
                     docker rm ${APP_NAME} || true
                     docker run -d --name ${APP_NAME} -p 8080:8080 ${DOCKER_IMAGE}:latest
